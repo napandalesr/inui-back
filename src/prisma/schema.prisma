@@ -1,0 +1,58 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String
+  lastName     String
+  email        String    @unique
+  document     String    @unique
+  typeDocument String
+  phone        String   
+  age          Int
+  address      String
+  occupation   String
+  eps          String
+  birthdate    String
+  password     String
+  enable       Boolean   @default(true)
+  role         Role?     @relation(fields: [roleId], references: [id])
+  roleId       Int?
+  consult      Consult[]
+  CheckIn      CheckIn[]
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model Consult {
+  id         Int       @id @default(autoincrement())
+  diagnostic String
+  reason     String
+  treatment  String
+  status     String
+  date       String
+  type       String
+  CheckIn    CheckIn[]
+  user       User?     @relation(fields: [userId], references: [id])
+  userId     Int?
+}
+
+model CheckIn {
+  id          Int      @id @default(autoincrement())
+  date        String
+  observation String?
+  consult     Consult? @relation(fields: [consultId], references: [id])
+  consultId   Int?
+  user        User?    @relation(fields: [doctorId], references: [id])
+  doctorId    Int?
+}
